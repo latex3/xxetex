@@ -12,7 +12,7 @@
   %
   \let\XeTeXmathcode\Umathcode
   % 
-  \def\XeTeXfonttype{%
+  \protected\def\XeTeXfonttype{%
     \directlua{
       local fid = token.scan_int()
       local tfmdata = font.getfont(fid)
@@ -21,7 +21,7 @@
     }\fontid
   }%
   %
-  \def\XeTeXfirstfontchar{%
+  \protected\def\XeTeXfirstfontchar{%
     \directlua{
       local fid = token.scan_int()
       local tfmdata = font.getfont(fid)
@@ -33,7 +33,7 @@
     }\fontid
   }%
   %
-  \def\XeTeXlastfontchar{%
+  \protected\def\XeTeXlastfontchar{%
     \directlua{
       local fid = token.scan_int()
       local tfmdata = font.getfont(fid)
@@ -61,7 +61,7 @@
       end
     }}%
   %
-  \def\XeTeXcountglyphs{%
+  \protected\def\XeTeXcountglyphs{%
     \directlua{
       local fid = token.scan_int()
       local tfmdata = font.getfont(fid)
@@ -94,7 +94,7 @@
     }\fontid
   }%
   %
-  \def\XeTeXglyphindex{%
+  \protected\def\XeTeXglyphindex{%
     \directlua{
       local k = string.gsub(token.scan_string(),'"','')
       token.scan_keyword(' ') % remove optional space
@@ -113,7 +113,7 @@
       tex.print([[\numexpr]] .. index .. [[\relax]])
     }}%
   %
-  \def\XeTeXcharglyph{%
+  \protected\def\XeTeXcharglyph{%
     \directlua{
       local id = token.scan_int()
       local tfmdata = font.getfont(font.current())
@@ -125,7 +125,7 @@
       tex.print([[\numexpr]] .. index .. [[\relax]])
     }}%
   %
-  \def\XeTeXglyphbounds{%
+  \protected\def\XeTeXglyphbounds{%
     \directlua{
       local edge = token.scan_int()
       local slot = token.scan_int()
