@@ -4,7 +4,9 @@
 \fi
 
 \def\XeTeXemulate{%
+  \chardef\XeTeXversion=0
   \def\XeTeXrevision{.99999}%
+  % Circumvent \outer error
   \csname newcount\endcsname\XeTeXtracingfonts \XeTeXtracingfonts=0
   \csname newcount\endcsname\XeTeXuseglyphmetrics \XeTeXuseglyphmetrics=1
   %
@@ -14,8 +16,8 @@
     \directlua{
       local fid = token.scan_int()
       local tfmdata = font.getfont(fid)
-      tex.count["count@"] = tfmdata.format == "opentype" and 2 or 0
-      tex.print([[\noexpand\csname count@\endcsname]])
+      local fonttype = tfmdata.format == "opentype" and 2 or 0
+      tex.print([[\numexpr]] .. fonttype .. [[\relax]])
     }\fontid
   }%
   %
@@ -27,8 +29,7 @@
       for slot in pairs(tfmdata.characters) do
           min = min and (slot < min and slot or min) or slot
       end
-      tex.count["count@"] = min
-      tex.print([[\noexpand\csname count@\endcsname]])
+      tex.print([[\numexpr]] .. min .. [[\relax]])
     }\fontid
   }%
   %
@@ -40,8 +41,7 @@
       for slot in pairs(tfmdata.characters) do
           max = max and (slot > max and slot < 2^16 and slot or max) or slot
       end
-      tex.count["count@"] = max
-      tex.print([[\noexpand\csname count@\endcsname]])
+      tex.print([[\numexpr]] .. max .. [[\relax]])
     }\fontid
   }%
   %
@@ -56,7 +56,7 @@
       for slot, char in pairs(tfmdata.characters) do
           if char.index == index then
               tex.print(utf.char(char.unicode))
-              break
+              return
           end
       end
     }}%
@@ -71,8 +71,7 @@
               count = count + 1
           end
       end
-      tex.count["count@"] = count
-      tex.print([[\noexpand\csname count@\endcsname]])
+      tex.print([[\numexpr]] .. count .. [[\relax]])
     }\fontid
   }%
   %
@@ -89,14 +88,16 @@
       for slot, char in pairs(tfmdata.shared.rawdata.descriptions) do
           if char.index == index then
               tex.print(char.name)
-              break
+              return
           end
       end
     }\fontid
   }%
   %
-  \def\XeTeXglyphindex"##1"{%
+  \def\XeTeXglyphindex{%
     \directlua{
+      local k = string.gsub(token.scan_string(),'"','')
+      token.scan_keyword(' ') % remove optional space
       local tfmdata = font.getfont(font.current())
       if tfmdata.format \string~= "opentype" then
           tex.error([[Cannot use \string\XeTeXglyphindex]] .. [[ with ]] ..
@@ -104,14 +105,13 @@
       end
       local index = 0
       for slot, char in pairs(tfmdata.shared.rawdata.descriptions) do
-          if char.name == "\luaescapestring{##1}" then
+          if char.name == k then
               index = char.index
               break
           end
       end
-      tex.count["count@"] = index
-      tex.print([[\noexpand\csname count@\endcsname]])
-    }\ignorespaces}%
+      tex.print([[\numexpr]] .. index .. [[\relax]])
+    }}%
   %
   \def\XeTeXcharglyph{%
     \directlua{
@@ -121,8 +121,8 @@
           tex.error([[Cannot use \string\XeTeXcharglyph]] .. [[ with ]] ..
                     tfmdata.name .. [[; not a native platform font]])
       end
-      tex.count["count@"] = tfmdata.characters[id].index
-      tex.print([[\noexpand\csname count@\endcsname]])
+      local index = tfmdata.characters[id].index
+      tex.print([[\numexpr]] .. index .. [[\relax]])
     }}%
   %
   \def\XeTeXglyphbounds{%
@@ -137,17 +137,17 @@
       for _,char in pairs(tfmdata.shared.rawdata.descriptions) do
           if char and char.index == slot then
               local bbox = char.boundingbox
-              tex.dimen["dimen@"] = 0
+              local dimen = 0
               if edge == 1 then
-                  tex.dimen["dimen@"] = bbox and bbox[1] / 100 * 2^16 or 0
+                  dimen = bbox and bbox[1] / 100 * 2^16 or 0
               elseif edge == 2 then
-                  tex.dimen["dimen@"] = tfmdata.characters[char.unicode].height
+                  dimen = tfmdata.characters[char.unicode].height
               elseif edge == 3 then
-                  tex.dimen["dimen@"] = bbox and (char.width - bbox[3]) / 100 * 2^16 or 0
+                  dimen = bbox and (char.width - bbox[3]) / 100 * 2^16 or 0
               elseif edge == 4 then
-                  tex.dimen["dimen@"] = tfmdata.characters[char.unicode].depth
+                  dimen = tfmdata.characters[char.unicode].depth
               end
-              tex.print([[\noexpand\csname dimen@\endcsname]])
+              tex.print([[\dimexpr]] .. tex.round(dimen) .. [[sp\relax]])
               break
           end
       end
