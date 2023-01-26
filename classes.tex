@@ -1,0 +1,76 @@
+% xetex character classes from xetex manual.
+
+% see also
+% https://chat.stackexchange.com/transcript/41?m=49002020#49002020
+
+% \XeTeXinterchartoks 4095 \mycharclassB case not working (loops)
+
+% note this runs in pre_linebreak_filter so inserting a font change
+% will not affect the following characters.
+
+\documentclass{article}
+\usepackage{color}
+
+\makeatletter
+\ifx\directlua\undefined\else
+
+
+
+
+\newcount\XeTeXinterchartokenstate 
+
+
+\newtoks\xxinterchartoks
+\directlua{xxinterchartoksnum=\the\allocationnumber print("AAa" .. xxinterchartoksnum)}
+\newbox\xxintercharbox
+\newtoks\xxruninterchartoks
+\directlua{xxruninterchartoksnum=\the\allocationnumber print("AAa" .. xxruninterchartoksnum)}
+\xxruninterchartoks={\global\setbox\xxintercharbox\hpack{\the\xxinterchartoks}}
+\directlua{require("xxclasses")}
+
+\chardef\e@alloc@intercharclass@top=4095
+
+\def\newXeTeXintercharclass{%
+ \e@alloc\XeTeXcharclass
+   \chardef\xe@alloc@intercharclass\m@ne\e@alloc@intercharclass@top}
+
+  \countdef\xe@alloc@intercharclass=257
+  \xe@alloc@intercharclass=\z@
+
+
+\fi
+\makeatother
+
+\begin{document}
+
+\XeTeXinterchartokenstate = 1
+
+\newXeTeXintercharclass \mycharclassa
+\newXeTeXintercharclass \mycharclassA
+\newXeTeXintercharclass \mycharclassB
+
+\XeTeXcharclass `\a \mycharclassa
+\XeTeXcharclass `\A \mycharclassA
+\XeTeXcharclass `\B \mycharclassB
+
+% between "a" and "A":
+\XeTeXinterchartoks \mycharclassa \mycharclassA = {[\itshape}
+\XeTeXinterchartoks \mycharclassA \mycharclassa = {\upshape]}
+
+% between " " and "B":
+%\XeTeXinterchartoks 4095 \mycharclassB = {\bgroup\color{blue}(}
+%\XeTeXinterchartoks \mycharclassB 4095 = {)\egroup}
+
+%\XeTeXinterchartoks 4095 \mycharclassB = {(}% this one loops
+\XeTeXinterchartoks \mycharclassB 4095 = {)}
+
+% between "B" and "B":
+\XeTeXinterchartoks \mycharclassB \mycharclassB = {.}
+
+aAa A a B aBa BB
+
+
+
+
+\end{document}
+
