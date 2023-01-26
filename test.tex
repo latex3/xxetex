@@ -1,0 +1,49 @@
+\ifdefined\directlua
+  \input XeTeXemulate.sty
+  \input luaotfload.sty
+  \XeTeXemulate
+\fi
+
+\font\1="[lmroman10-italic.otf]" at 10pt\1
+\font\2=cmr10 at 10pt
+
+\edef\x{\the\XeTeXfonttype\1}“\x”
+\edef\x{\the\XeTeXfonttype\2}“\x”
+
+\edef\x{\the\XeTeXversion}“\x”
+\edef\x{\XeTeXrevision}“\x”
+
+\edef\x{\char\XeTeXfirstfontchar\1}“\x”
+\edef\x{\char\XeTeXfirstfontchar\2}“\x”
+
+\edef\x{\char\XeTeXlastfontchar\1}“\x”
+\edef\x{\char\XeTeXlastfontchar\2}“\x”
+
+\edef\x{\XeTeXglyph150}“\x”
+
+\edef\x{\the\XeTeXcountglyphs\1}“\x”
+\edef\x{\the\XeTeXcountglyphs\2}“\x”
+
+\edef\x{\XeTeXglyphname\1 150}“\x”
+
+\edef\x{\the\XeTeXglyphindex"acircumflexgrave"\relax}“\x”
+\edef\x{\the\XeTeXglyphindex"acircumflexgrave" }“\x”
+
+\edef\x{\the\XeTeXcharglyph"00A5}“\x”
+
+\edef\x{\the\XeTeXglyphbounds 1 \XeTeXcharglyph`f}“\x”
+\edef\x{\the\XeTeXglyphbounds 2 \XeTeXcharglyph`f}“\x”
+\edef\x{\the\XeTeXglyphbounds 3 \XeTeXcharglyph`f}“\x”
+\edef\x{\the\XeTeXglyphbounds 4 \XeTeXcharglyph`f}“\x”
+
+\edef\x{[\the\XeTeXglyphindex yen ] x}“\x”
+\edef\x{[\the\XeTeXglyphindex "yen" ] x}“\x”
+\edef\x{[\the\XeTeXglyphindex"yen"\relax] x }“\x”
+\edef\x{[\the\XeTeXglyphindex"yen"] x }“\x”
+\edef\x{[\the\XeTeXglyphindex "yen" *2]}“\x”
+\edef\x{[\the\XeTeXglyphindex "yen"\relax*2]}“\x”
+
+\edef\x{[\XeTeXglyphindex"yen"] }“\meaning\x”
+\edef\x{[\XeTeXglyphindex] }“\meaning\x”
+
+\bye
