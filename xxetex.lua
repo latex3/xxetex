@@ -134,22 +134,14 @@ local function XeTeXglyphbounds()
     end
 end
 
-local lft = lua.get_functions_table()
-lft[#lft + 1] = XeTeXfonttype
-token.set_lua("XeTeXfonttype", #lft, "global")
-lft[#lft + 1] = XeTeXfirstfontchar
-token.set_lua("XeTeXfirstfontchar", #lft, "global")
-lft[#lft + 1] = XeTeXlastfontchar
-token.set_lua("XeTeXlastfontchar", #lft, "global")
-lft[#lft + 1] = XeTeXglyph
-token.set_lua("XeTeXglyph", #lft, "global", "protected")
-lft[#lft + 1] = XeTeXcountglyphs
-token.set_lua("XeTeXcountglyphs", #lft, "global")
-lft[#lft + 1] = XeTeXglyphname
-token.set_lua("XeTeXglyphname", #lft, "global", "protected")
-lft[#lft + 1] = XeTeXglyphindex
-token.set_lua("XeTeXglyphindex", #lft, "global")
-lft[#lft + 1] = XeTeXcharglyph
-token.set_lua("XeTeXcharglyph", #lft, "global")
-lft[#lft + 1] = XeTeXglyphbounds
-token.set_lua("XeTeXglyphbounds", #lft, "global")
+return {
+    XeTeXfonttype      = XeTeXfonttype,
+    XeTeXfirstfontchar = XeTeXfirstfontchar,
+    XeTeXlastfontchar  = XeTeXlastfontchar,
+    XeTeXglyph         = XeTeXglyph,
+    XeTeXcountglyphs   = XeTeXcountglyphs,
+    XeTeXglyphname     = XeTeXglyphname,
+    XeTeXglyphindex    = XeTeXglyphindex,
+    XeTeXcharglyph     = XeTeXcharglyph,
+    XeTeXglyphbounds   = XeTeXglyphbounds,
+}
