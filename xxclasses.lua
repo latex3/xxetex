@@ -31,10 +31,12 @@ local function xxinterchartoks(head)
     if not (tex.count.XeTeXinterchartokenstate > 0) then
         return head
     end
-
+    xxflag=-1
     for n in node.traverse(head) do
     local a = 4095
     local b = 4095
+    if xxflag==n then xxflag=-1 end
+    if xxflag ==-1 then
     if n.id==glyphid then
      a = xxclasses[n.char] or 0
     end
@@ -45,11 +47,14 @@ local function xxinterchartoks(head)
 	print("AAb" .. xxruninterchartoksnum)
 	print(a,b)
 	print("AAc" .. xxclasstoks[a .. "/" .. b])
+	    xxflag=1
+	    if n.next then xxflag=n.next end
 	    tex.scantoks(xxinterchartoksnum,0,xxclasstoks[a .. "/" .. b])
             tex.runtoks("xxruninterchartoks")
             local box = tex.getbox("xxintercharbox")
-            node.insert_after(head, n, node.copy_list(box))
+            node.insert_after(head, n, node.copy_list(box))	
         end
+    end
     end
     return head
 end

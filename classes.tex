@@ -58,16 +58,14 @@
 \XeTeXinterchartoks \mycharclassA \mycharclassa = {\upshape]}
 
 % between " " and "B":
-%\XeTeXinterchartoks 4095 \mycharclassB = {\bgroup\color{blue}(}
-%\XeTeXinterchartoks \mycharclassB 4095 = {)\egroup}
+\XeTeXinterchartoks 4095 \mycharclassB = {\color{blue}(}
+\XeTeXinterchartoks \mycharclassB 4095 = {)\color{black}}
 
-%\XeTeXinterchartoks 4095 \mycharclassB = {(}% this one loops
-\XeTeXinterchartoks \mycharclassB 4095 = {)}
 
 % between "B" and "B":
 \XeTeXinterchartoks \mycharclassB \mycharclassB = {.}
 
-aAa A a B aBa BB
+aAa A a B aBa BB x
 
 
 
