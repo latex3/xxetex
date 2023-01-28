@@ -1,0 +1,18 @@
+\ifdefined\directlua
+\ifdefined\XeTeXinterchartokenstate\else
+\input{xxetex.tex}
+\fi
+\fi
+
+\addtolength\textwidth{200pt}
+\documentclass{article}
+
+\begin{document}
+
+
+1: \fbox{\XeTeXpdffile example-image.pdf scaled 500 rotated 180}
+
+
+2: \fbox{\XeTeXpdffile example-image-letter-numbered.pdf  page 2 scaled 500 }
+
+\end{document}

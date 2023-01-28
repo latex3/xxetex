@@ -236,6 +236,19 @@ repeat
     if angle==90 then
       t.transform= 1
     end
+    if angle==180 then
+      t.transform= 2
+    end
+    if angle==-90 then
+      t.transform= 3
+    end
+  end
+  -- just pdf but do for both here
+  token.scan_keyword(' ')
+  if token.scan_keyword('page') then
+    scan=true
+    -- img.page is now read-only
+    -- t.page=  token.scan_int()
   end
 until not(scan)
 img.write(t)
