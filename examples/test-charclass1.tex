@@ -11,7 +11,9 @@
 \documentclass{article}
 \usepackage{color}
 \ifdefined\directlua
+\ifdefined\XeTeXinterchartokenstate\else
 \input{xxetex.tex}
+\fi
 \fi
 
 
