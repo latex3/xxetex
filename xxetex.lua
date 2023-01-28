@@ -196,6 +196,55 @@ local function xxetexinterchartoks(head)
     return head
 end
 
+-- graphics
+
+
+
+
+local function XeTeXpicfile()
+local filename = token.scan_string()
+local t=img.scan{filename=filename}
+--local t ={}
+--t.filename =  token.scan_string()
+local scan=false
+-- ignore key order for now
+repeat
+  scan=false
+  token.scan_keyword(' ')
+  local scale=1
+  if token.scan_keyword('scaled') then
+    scan=true
+    scale=  0.0001*token.scan_int()
+    -- t.width=scale*t.xsize
+    -- t.height=scale*t.ysize
+  end
+  token.scan_keyword(' ')
+  if token.scan_keyword('width') then
+    scan=true
+    t.width=  token.scan_dimen()
+  end
+  token.scan_keyword(' ')
+  if token.scan_keyword('height') then
+    scan=true
+    t.height=  token.scan_dimen()
+  end
+  token.scan_keyword(' ')
+  if token.scan_keyword('rotated') then
+    -- full coverage would need to wrap image 
+    scan=true
+    local angle=token.scan_real()
+    if angle==90 then
+      t.transform= 1
+    end
+  end
+until not(scan)
+img.write(t)
+end
+local func = luatexbase.new_luafunction 'XeTeXpicfile'
+lua.get_functions_table()[func] = XeTeXpicfile
+token.set_lua('XeTeXpicfile', func , "protected")
+token.set_lua('XeTeXpdffile', func , "protected")
+
 return {
     XeTeXfonttype      = XeTeXfonttype,
     XeTeXfirstfontchar = XeTeXfirstfontchar,

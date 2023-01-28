@@ -1,0 +1,36 @@
+\ifdefined\directlua
+\ifdefined\XeTeXinterchartokenstate\else
+\input{xxetex.tex}
+\fi
+\fi
+
+\addtolength\textwidth{200pt}
+\documentclass{article}
+
+\begin{document}
+
+
+1: [\XeTeXpicfile example-image.png ]
+
+
+2: [\XeTeXpicfile example-image.png  scaled 500 ]
+
+
+3: [\XeTeXpicfile example-image.png  width 3cm ]
+
+
+4: [\XeTeXpicfile example-image.png  rotated 90 ]
+
+\clearpage
+
+5: [\XeTeXpicfile example-image.png  width 3cm rotated 90 ]
+
+6: [\XeTeXpicfile example-image.png  rotated 90 width 3cm ]
+
+\clearpage
+
+7: [\XeTeXpicfile example-image.png  width 3cm height 3cm ]
+
+8: [\XeTeXpicfile example-image.png  height 3cm width 3cm ]
+
+\end{document}
