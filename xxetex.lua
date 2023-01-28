@@ -208,15 +208,31 @@ local t=img.scan{filename=filename}
 --t.filename =  token.scan_string()
 local scan=false
 -- ignore key order for now
+for i,v in pairs(img.fields()) do
+print (i .. ": " .. v .. "=" .. (t[v] or "?"))
+end
 repeat
   scan=false
   token.scan_keyword(' ')
-  local scale=1
   if token.scan_keyword('scaled') then
     scan=true
+    scale=  0.001*token.scan_int()
+    print("xs: " .. scale .. " * " .. t.xsize.. " * " .. t.xres)
+    -- 65000???
+    t.width=scale*t.xsize  * 65000
+    t.height=scale*t.ysize  * 65000
+  end
+  token.scan_keyword(' ')
+  if token.scan_keyword('xscaled') then
+    scan=true
+    scale=  0.001*token.scan_int()
+    t.width=scale*t.xsize * 65000
+  end
+  token.scan_keyword(' ')
+  if token.scan_keyword('yscaled') then
+    scan=true
     scale=  0.0001*token.scan_int()
-    -- t.width=scale*t.xsize
-    -- t.height=scale*t.ysize
+    -- t.height=scale*t.ysize * 65000
   end
   token.scan_keyword(' ')
   if token.scan_keyword('width') then
