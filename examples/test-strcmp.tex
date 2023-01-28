@@ -1,0 +1,15 @@
+\ifdefined\directlua
+\ifdefined\XeTeXinterchartokenstate\else
+\input{xxetex.tex}
+\fi
+\fi
+
+\documentclass{article}
+
+\begin{document}
+
+\typeout{1: \strcmp{aaa}{aaa}}
+\typeout{2: \strcmp{aaa}{bbb}}
+\typeout{3: \strcmp{bbb}{aaa}}
+
+\end{document}
