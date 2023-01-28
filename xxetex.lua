@@ -134,6 +134,68 @@ local function XeTeXglyphbounds()
     end
 end
 
+
+-- Character Classes
+
+
+local xxetexclasses={}
+local xxetexclasstoks={}
+
+local function XeTeXcharclass()
+local a = token.scan_int()
+local b = token.scan_int()
+xxetexclasses[a]=b
+end
+local func = luatexbase.new_luafunction 'XeTeXcharclass'
+token.set_lua('XeTeXcharclass', func , "protected")
+lua.get_functions_table()[func] = XeTeXcharclass
+
+local function XeTeXinterchartoks()
+local a = token.scan_int()
+local b = token.scan_int()
+token.scan_keyword(' ')
+token.scan_keyword('=')
+token.scan_keyword(' ')
+local c = token.scan_argument(false)
+xxetexclasstoks[a .. "/" .. b]=c
+end
+local func = luatexbase.new_luafunction 'XeTeXinterchartoks'
+token.set_lua('XeTeXinterchartoks', func , "protected")
+lua.get_functions_table()[func] = XeTeXinterchartoks
+
+
+
+
+local function xxetexinterchartoks(head)
+    if not (tex.count.XXeTeXinterchartokenstate > 0) then
+        return head
+    end
+    local glyphid=node.id"glyph"
+    local xxetexflag=-1
+    for n in node.traverse(head) do
+    local a = 4095
+    local b = 4095
+    if xxetexflag==n then xxetexflag=-1 end
+    if xxetexflag ==-1 then
+    if n.id==glyphid then
+     a = xxetexclasses[n.char] or 0
+    end
+    if n.next and n.next.id==glyphid then
+     b = xxetexclasses[n.next.char] or 0
+    end
+        if xxetexclasstoks[a .. "/" .. b] then
+	    xxetexflag=-1
+	    if n.next then xxetexflag=n.next end
+	    tex.scantoks(xxetexinterchartoksnum,0,xxetexclasstoks[a .. "/" .. b])
+            tex.runtoks("xxetexruninterchartoks")
+            local box = tex.getbox("xxetex@intercharbox")
+            node.insert_after(head, n, node.copy_list(box))	
+        end
+    end
+    end
+    return head
+end
+
 return {
     XeTeXfonttype      = XeTeXfonttype,
     XeTeXfirstfontchar = XeTeXfirstfontchar,
@@ -144,4 +206,6 @@ return {
     XeTeXglyphindex    = XeTeXglyphindex,
     XeTeXcharglyph     = XeTeXcharglyph,
     XeTeXglyphbounds   = XeTeXglyphbounds,
+    --
+    xxetexinterchartoks = xxetexinterchartoks,
 }

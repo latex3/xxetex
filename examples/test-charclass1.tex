@@ -10,40 +10,14 @@
 
 \documentclass{article}
 \usepackage{color}
-
-\makeatletter
-\ifx\directlua\undefined\else
-
-
-
-
-\newcount\XeTeXinterchartokenstate 
-
-
-\newtoks\xxinterchartoks
-\directlua{xxinterchartoksnum=\the\allocationnumber print("AAa" .. xxinterchartoksnum)}
-\newbox\xxintercharbox
-\newtoks\xxruninterchartoks
-\directlua{xxruninterchartoksnum=\the\allocationnumber print("AAa" .. xxruninterchartoksnum)}
-\xxruninterchartoks={\global\setbox\xxintercharbox\hpack{\the\xxinterchartoks}}
-\directlua{require("xxclasses")}
-
-\chardef\e@alloc@intercharclass@top=4095
-
-\def\newXeTeXintercharclass{%
- \e@alloc\XeTeXcharclass
-   \chardef\xe@alloc@intercharclass\m@ne\e@alloc@intercharclass@top}
-
-  \countdef\xe@alloc@intercharclass=257
-  \xe@alloc@intercharclass=\z@
-
-
+\ifdefined\directlua
+\input{xxetex.tex}
 \fi
-\makeatother
+
 
 \begin{document}
 
-\XeTeXinterchartokenstate = 1
+
 
 \newXeTeXintercharclass \mycharclassa
 \newXeTeXintercharclass \mycharclassA
@@ -65,9 +39,17 @@
 % between "B" and "B":
 \XeTeXinterchartoks \mycharclassB \mycharclassB = {.}
 
-aAa A a B aBa BB x
 
 
+aAa A a B aBa BB 
+
+\XeTeXinterchartokenstate = 1
+
+aAa A a B aBa BB 
+
+\XeTeXinterchartokenstate = 0
+
+aAa A a B aBa BB 
 
 
 \end{document}

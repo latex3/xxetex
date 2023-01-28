@@ -7,11 +7,9 @@
 %\catcode`\{=1
 %\catcode`\}=2
 \catcode`\@=11
-\catcode`\!=11
 %\catcode`\_=11
 %\catcode`\:=11
 
-\let\@@!directlua\directlua %\let\directlua\undefined
 
 \chardef\XeTeXversion=0
 \def\XeTeXrevision{.99999}%
@@ -21,17 +19,69 @@
 
 \let\XeTeXmathcode\Umathcode
 
-\@@!directlua{xxetex = xxetex or require("xxetex.lua")}
+\directlua{xxetex = xxetex or require("xxetex.lua")}
 
-\protected\def\XeTeXfonttype     {\@@!directlua{xxetex.XeTeXfonttype()}}
-\protected\def\XeTeXfirstfontchar{\@@!directlua{xxetex.XeTeXfirstfontchar()}}
-\protected\def\XeTeXlastfontchar {\@@!directlua{xxetex.XeTeXlastfontchar()}}
-          \def\XeTeXglyph        {\@@!directlua{xxetex.XeTeXglyph()}}
-\protected\def\XeTeXcountglyphs  {\@@!directlua{xxetex.XeTeXcountglyphs()}}
-          \def\XeTeXglyphname    {\@@!directlua{xxetex.XeTeXglyphname()}}
-\protected\def\XeTeXglyphindex   {\@@!directlua{xxetex.XeTeXglyphindex()}}
-\protected\def\XeTeXcharglyph    {\@@!directlua{xxetex.XeTeXcharglyph()}}
-\protected\def\XeTeXglyphbounds  {\@@!directlua{xxetex.XeTeXglyphbounds()}}
+%% Font related commands
+\protected\def\XeTeXfonttype     {\directlua{xxetex.XeTeXfonttype()}}
+\protected\def\XeTeXfirstfontchar{\directlua{xxetex.XeTeXfirstfontchar()}}
+\protected\def\XeTeXlastfontchar {\directlua{xxetex.XeTeXlastfontchar()}}
+          \def\XeTeXglyph        {\directlua{xxetex.XeTeXglyph()}}
+\protected\def\XeTeXcountglyphs  {\directlua{xxetex.XeTeXcountglyphs()}}
+          \def\XeTeXglyphname    {\directlua{xxetex.XeTeXglyphname()}}
+\protected\def\XeTeXglyphindex   {\directlua{xxetex.XeTeXglyphindex()}}
+\protected\def\XeTeXcharglyph    {\directlua{xxetex.XeTeXcharglyph()}}
+\protected\def\XeTeXglyphbounds  {\directlua{xxetex.XeTeXglyphbounds()}}
+
+
+
+
+%% interchartoks (approximated by internode toks)
+
+
+
+%
+\newcount\XXeTeXinterchartokenstate 
+\def\XeTeXinterchartokenstateON{\directlua{
+if not(luatexbase.in_callback("pre_linebreak_filter",
+                              "xxetex interchartoks")) then
+luatexbase.add_to_callback("pre_linebreak_filter",
+                           xxetex.xxetexinterchartoks,
+                           "xxetex interchartoks")
+end}}
+\def\XeTeXinterchartokenstateOFF{\directlua{
+if luatexbase.in_callback("pre_linebreak_filter",
+                          "xxetex interchartoks") then
+luatexbase.remove_from_callback("pre_linebreak_filter",
+                                "xxetex interchartoks")
+end
+}}
+% avoid registering the callback if \XeTeXinterchartokenstate is not used
+\protected\def\XeTeXinterchartokenstate{%
+   \XeTeXinterchartokenstateON\XXeTeXinterchartokenstate}
+
+\newtoks\xxetex@interchartoks
+
+\directlua{xxetexinterchartoksnum=\the\allocationnumber}
+\newbox\xxetex@intercharbox
+\newtoks\xxetexruninterchartoks
+\directlua{xxetexruninterchartoksnum=\the\allocationnumber}
+\xxetexruninterchartoks={%
+  \global\setbox\xxetex@intercharbox\hpack{\the\xxetex@interchartoks}}
+
+
+
+\ifx\newXeTeXintercharclass\@undefined
+% from latex.ltx
+\chardef\e@alloc@intercharclass@top=4095
+
+\def\newXeTeXintercharclass{%
+ \e@alloc\XeTeXcharclass
+   \chardef\xe@alloc@intercharclass\m@ne\e@alloc@intercharclass@top}
+
+  \countdef\xe@alloc@intercharclass=257
+  \xe@alloc@intercharclass=\z@
+\fi
+
 
 %\catcode`\{=12
 %\catcode`\{=12
